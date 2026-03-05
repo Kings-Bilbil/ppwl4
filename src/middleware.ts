@@ -1,4 +1,4 @@
-import { Elysia } from "elysia";
+import { Elysia, t } from "elysia";
 import { openapi } from "@elysiajs/openapi";
 
 const app = new Elysia()
@@ -52,6 +52,27 @@ const app = new Elysia()
       },
     }
   )
+  .post(
+    "/login",
+    ({ body }) => {
+      return { success: true, data: body };
+    },
+    {
+      body: t.Object({
+        email: t.String({ format: "email" }),
+        password: t.String(),
+      }),
+    }
+  )
+  .onError(({ code, set }) => {
+    if (code === "VALIDATION") {
+      set.status = 400;
+      return {
+        success: false,
+        error: "Validation Error",
+      };
+    }
+  })
   .listen(3000);
 
 console.log(`Elysia is running at ${app.server?.hostname}:${app.server?.port}`);
