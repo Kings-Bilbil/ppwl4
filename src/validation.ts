@@ -3,7 +3,6 @@ import { openapi } from "@elysiajs/openapi";
 
 const app = new Elysia()
   .use(openapi())
-  // --- KODE PRAKTIKUM 1 ---
   .post(
     "/request",
     ({ body }) => {
@@ -20,7 +19,6 @@ const app = new Elysia()
       }),
     }
   )
-  // --- KODE PRAKTIKUM 2 ---
   .get(
     "/products/:id",
     ({ params, query }) => {
@@ -32,12 +30,25 @@ const app = new Elysia()
     },
     {
       params: t.Object({
-        // t.Numeric() digunakan untuk mengonversi string dari URL menjadi angka dan memvalidasinya
         id: t.Numeric(),
       }),
       query: t.Object({
-        // Membatasi input query 'sort' hanya boleh "asc" atau "desc"
         sort: t.Optional(t.Union([t.Literal("asc"), t.Literal("desc")])),
+      }),
+    }
+  )
+  .get(
+    "/stats",
+    () => {
+      return {
+        total: 100,
+        active: 85,
+      };
+    },
+    {
+      response: t.Object({
+        total: t.Number(),
+        active: t.Number(),
       }),
     }
   )
